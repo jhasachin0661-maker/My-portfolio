@@ -8,27 +8,136 @@ const PROFILE = { name: 'Sachin Jha', role: 'Full Stack Developer / Frontend Dev
 const ROTATOR = ['Full Stack Developer', 'Frontend Developer', 'AI / Data Explorer', 'Systems Thinker'];
 
 function usePortfolioData() {
-  const [data, setData] = useState({ projects: [], skills: [], journey: [], build: null, lab: [], settings: {} });
+  const [data, setData] = useState({
+    projects: [],
+    skills: [],
+    journey: [],
+    build: null,
+    lab: [],
+    settings: {}
+  });
+
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    Promise.all([
-      api.get('/projects'), api.get('/skills'), api.get('/journey'), api.get('/current-build'),
-      api.get('/lab').catch(() => []),
-      api.get('/settings').catch(() => ({})),
-    ]).then(([projects, skills, journey, build, lab, settings]) => setData({ projects, skills, journey, build, lab, settings }))
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    let alive = true;
+
+    const loadPortfolio = async () => {
+      const results = await Promise.allSettled([
+        api.get('/projects'),
+        api.get('/skills'),
+        api.get('/journey'),
+        api.get('/current-build'),
+        api.get('/lab'),
+        api.get('/settings')
+      ]);
+
+      if (!alive) return;
+
+      const [
+        projectsResult,
+        skillsResult,
+        journeyResult,
+        buildResult,
+        labResult,
+        settingsResult
+      ] = results;
+
+      setData({
+        projects:
+          projectsResult.status === 'fulfilled'
+            ? projectsResult.value
+            : [],
+
+        skills:
+          skillsResult.status === 'fulfilled'
+            ? skillsResult.value
+            : [],
+
+        journey:
+          journeyResult.status === 'fulfilled'
+            ? journeyResult.value
+            : [],
+
+        build:
+          buildResult.status === 'fulfilled'
+            ? buildResult.value
+            : null,
+
+        lab:
+          labResult.status === 'fulfilled'
+            ? labResult.value
+            : [],
+
+        settings:
+          settingsResult.status === 'fulfilled'
+            ? settingsResult.value
+            : {}
+      });
+
+      results.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          const endpoints = [
+            '/projects',
+            '/skills',
+            '/journey',
+            '/current-build',
+            '/lab',
+            '/settings'
+          ];
+
+          console.error(
+            `Portfolio API failed: ${endpoints[index]}`,
+            result.reason
+          );
+        }
+      });
+
+      setLoading(false);
+    };
+
+    loadPortfolio();
+
+    return () => {
+      alive = false;
+    };
   }, []);
+
   return { ...data, loading };
 }
 
 function useSystemStatus() {
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = useState({
+    system: 'CHECKING',
+    api: 'CHECKING'
+  });
+
   useEffect(() => {
     let alive = true;
-    api.get('/status').then(result => alive && setStatus(result)).catch(() => alive && setStatus({ system: 'OFFLINE', api: 'OFFLINE' }));
-    return () => { alive = false; };
+
+    api.get('/health')
+      .then(() => {
+        if (!alive) return;
+
+        setStatus({
+          system: 'ONLINE',
+          api: 'ONLINE'
+        });
+      })
+      .catch(() => {
+        if (!alive) return;
+
+        setStatus({
+          system: 'OFFLINE',
+          api: 'OFFLINE'
+        });
+      });
+
+    return () => {
+      alive = false;
+    };
   }, []);
+
   return status;
 }
 
