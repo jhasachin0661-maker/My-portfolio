@@ -106,3 +106,4 @@ No new npm dependencies were required for this pass — everything uses the exis
 - **Project galleries**: no real screenshots were provided, so projects show a generated abstract visual instead. Add real screenshot URLs via the `gallery` field whenever you have them.
 - **Canonical/OG URL** in `index.html` uses a placeholder domain (`sachinjha.dev`) — update it to your actual deployed domain.
 - The provided content did not include a real name change, project GitHub links, or measurable project outcomes beyond what was already given, so nothing was invented there. The visible name remains `Sachin Jha`, editable via the new Settings tab without touching code.
+Built with React, Node.js, Express and Prisma.
