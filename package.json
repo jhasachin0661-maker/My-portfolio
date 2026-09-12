@@ -1,0 +1,12 @@
+{
+  "name": "sachin-jha-portfolio",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "setup": "npm run db:push --prefix backend && npm run db:seed --prefix backend",
+    "build": "npm run build --prefix frontend",
+    "start": "npm start --prefix backend"
+  },
+  "devDependencies": { "concurrently": "^9.1.2" }
+}

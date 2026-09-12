@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  number      Int      @unique
+  name        String
+  slug        String   @unique
+  description String
+  details     String?
+  problem     String?
+  solution    String?
+  challenges  String?
+  learnings   String?
+  stack       String
+  tags        String?
+  gallery     String?
+  status      String
+  year        String
+  liveUrl     String?
+  githubUrl   String?
+  imageUrl    String?
+  featured    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Skill {
+  id          String   @id @default(cuid())
+  category    String
+  name        String
+  description String?
+  order       Int      @default(0)
+}
+
+model Journey {
+  id          String   @id @default(cuid())
+  period      String
+  title       String
+  description String
+  order       Int      @default(0)
+}
+
+model CurrentBuild {
+  id          String   @id @default(cuid())
+  name        String
+  status      String
+  description String
+  stack       String
+  objective   String
+  buildPhase  String?
+  updatedAt   DateTime @updatedAt
+}
+
+model LabExperiment {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  stack       String
+  status      String
+  link        String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model SiteSettings {
+  id               String   @id @default(cuid())
+  name             String   @default("Sachin Jha")
+  role             String   @default("Full Stack Developer / Frontend Developer")
+  tagline          String   @default("Building digital systems that feel alive.")
+  location         String   @default("India")
+  email            String   @default("jhasachin0661@gmail.com")
+  github           String?
+  linkedin         String?
+  resumeUrl        String?
+  availability     String   @default("Available for opportunities")
+  updatedAt        DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
+}
