@@ -4,12 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js",
-    "db:push": "prisma db push",
-    "db:seed": "node prisma/seed.js",
-    "prisma:generate": "prisma generate"
-  },
+  "dev": "node --watch src/server.js",
+  "start": "node src/server.js",
+  "db:push": "prisma db push",
+  "db:seed": "node prisma/seed.js",
+  "prisma:generate": "prisma generate",
+  "postinstall": "prisma generate"
+},
   "dependencies": {
     "@prisma/client": "6.12.0",
     "bcryptjs": "^2.4.3",
