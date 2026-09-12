@@ -13,27 +13,11 @@ import { loginSchema, contactSchema, projectSchema, skillSchema, journeySchema, 
 if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET is required');
 const app = express();
 const port = Number(process.env.PORT || 4000);
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  'http://localhost:5173'
-].filter(Boolean);
+const frontend = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow server-to-server / same-origin requests
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      return callback(
-        new Error(`CORS blocked origin: ${origin}`)
-      );
-    },
+    origin: frontend,
     credentials: true
   })
 );
